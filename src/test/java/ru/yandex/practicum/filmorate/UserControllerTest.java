@@ -23,70 +23,70 @@ public class UserControllerTest {
     }
 
     @Test
-    public void UserNullEmail() {
+    public void userNullEmail() {
         user.setEmail(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("email пустой", exception.getMessage());
     }
 
     @Test
-    public void UserNullLogin() {
+    public void userNullLogin() {
         user.setLogin(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("login пустой", exception.getMessage());
     }
 
     @Test
-    public void UserNullName() {
+    public void userNullName() {
         user.setName(null);
         validate.validateUser(user);
         Assertions.assertEquals(user.getLogin(), user.getName(), " имя не заполнено, должно присвоенно как login");
     }
 
     @Test
-    public void UserNullBirthday() {
+    public void userNullBirthday() {
         user.setBirthday(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("дата пустая", exception.getMessage());
     }
 
     @Test
-    public void UserEmptyEmail() {
+    public void userEmptyEmail() {
         user.setEmail("");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("email пустой", exception.getMessage());
     }
 
     @Test
-    public void UserEmptyLogin() {
+    public void userEmptyLogin() {
         user.setLogin("");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("login пустой", exception.getMessage());
     }
 
     @Test
-    public void UserOtherName() {
+    public void userOtherName() {
         user.setName("");
         validate.validateUser(user);
         Assertions.assertEquals(user.getLogin(), user.getName(), " имя не заполнено, должно присвоенно как login");
     }
 
     @Test
-    public void UserNotEmail() {
+    public void userNotEmail() {
         user.setEmail("yaya.ru");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("введен не email", exception.getMessage());
     }
 
     @Test
-    public void UserWhitespaceLogin() {
+    public void userWhitespaceLogin() {
         user.setLogin("login login");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("присутствуют пробелы", exception.getMessage());
     }
 
     @Test
-    public void UserFutureBirthday() {
+    public void userFutureBirthday() {
         user.setBirthday(LocalDate.now().plusYears(3));
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateUser(user));
         Assertions.assertEquals("введена дата из будущего", exception.getMessage());
