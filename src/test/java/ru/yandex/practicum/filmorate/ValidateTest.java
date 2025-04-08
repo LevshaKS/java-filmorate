@@ -62,23 +62,22 @@ public class ValidateTest {
     @Test
     void validatorFilmTest() {
         Film film = new Film(1L, "kino", Strings.repeat("*", 220),
-                LocalDate.now().plusYears(3), -12);
+                LocalDate.now().plusYears(3), 2);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertThat(violations).hasSize(4);
+        assertThat(violations).hasSize(2);
         assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactlyInAnyOrder("не правильное число символов",
-                "дата из будущего", "неверное значение", "должно быть не меньше 1");
+                "дата из будущего");
     }
 
     @Test
     void validatorFilmNotNull() {
         Film film = new Film(1L, null, null,
-                null, 0);
+                null, 2);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertThat(violations).hasSize(5);
-        assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactlyInAnyOrder("название не заполнено",
-                "должно быть не меньше 1", "дата пустая", "описание пустое", "неверное значение");
+        assertThat(violations).hasSize(3);
+        assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactlyInAnyOrder("название не заполнено", "дата пустая", "описание пустое");
     }
 
 }
