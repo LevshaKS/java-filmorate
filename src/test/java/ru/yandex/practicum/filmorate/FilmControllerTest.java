@@ -23,76 +23,76 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void FilmNullName() {
+    public void filmNullName() {
         film.setName(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("название пустое", exception.getMessage());
     }
 
     @Test
-    public void FilmNullDescription() {
+    public void filmNullDescription() {
         film.setDescription(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("описание пустое", exception.getMessage());
     }
 
     @Test
-    public void FilmNullReleaseDate() {
+    public void filmNullReleaseDate() {
         film.setReleaseDate(null);
         exception = Assertions.assertThrows(ValidationNullException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("дата выпуска не заполнена", exception.getMessage());
     }
 
     @Test
-    public void FilmEmptyName() {
+    public void filmEmptyName() {
         film.setName("");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("название пустое", exception.getMessage());
     }
 
     @Test
-    public void FilmEmptyDescription() {
+    public void filmEmptyDescription() {
         film.setDescription("");
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("описание пустое", exception.getMessage());
     }
 
     @Test
-    public void FilmMax200Description() {
+    public void filmMax200Description() {
         film.setDescription(Strings.repeat("*", 220));
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("превышает количество символов", exception.getMessage());
     }
 
     @Test
-    public void FilmMax201Description() {
+    public void filmMax201Description() {
         film.setDescription(Strings.repeat("*", 201));
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("превышает количество символов", exception.getMessage());
     }
 
     @Test
-    public void FilmMax199Description() {
+    public void filmMax199Description() {
         film.setDescription(Strings.repeat("*", 199));
         Assertions.assertDoesNotThrow(() -> validate.validateFilm(film));
     }
 
     @Test
-    public void FilmNotReleaseDate() {
+    public void filmNotReleaseDate() {
         film.setReleaseDate(LocalDate.MIN);
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("дата выпуска раньше 28 декабря 1895", exception.getMessage());
     }
 
     @Test
-    public void FilmPositiveDuration() {
+    public void filmPositiveDuration() {
         film.setDuration(-4);
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("продолжительность <= 0", exception.getMessage());
     }
 
     @Test
-    public void FilmIs0Duration() {
+    public void filmIs0Duration() {
         film.setDuration(0);
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("продолжительность <= 0", exception.getMessage());

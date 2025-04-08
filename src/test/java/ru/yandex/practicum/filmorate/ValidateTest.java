@@ -26,14 +26,14 @@ public class ValidateTest {
     }
 
     @Test
-    void ValidatorUserOk() {
+    void validatorUserOk() {
         User user = new User(1L, "name@yabex.ru", "log", "name", LocalDate.now().minusYears(3));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void ValidatorUserTest() {
+    void validatorUserTest() {
         User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
@@ -43,7 +43,7 @@ public class ValidateTest {
     }
 
     @Test
-    void ValidatorUserNotNull() {
+    void validatorUserNotNull() {
         User user = new User(1L, null, null, "name", null);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
@@ -53,14 +53,14 @@ public class ValidateTest {
     }
 
     @Test
-    void ValidatorFilmOk() {
+    void validatorFilmOk() {
         Film film = new Film(1L, "kino", "kino o kine", LocalDate.of(1990, 02, 22), 25);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void ValidatorFilmTest() {
+    void validatorFilmTest() {
         Film film = new Film(1L, "kino", Strings.repeat("*", 220),
                 LocalDate.now().plusYears(3), -12);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -71,7 +71,7 @@ public class ValidateTest {
     }
 
     @Test
-    void ValidatorFilmNotNull() {
+    void validatorFilmNotNull() {
         Film film = new Film(1L, null, null,
                 null, 0);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -82,3 +82,4 @@ public class ValidateTest {
     }
 
 }
+
