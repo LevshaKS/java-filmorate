@@ -18,10 +18,11 @@ public class FilmControllerTest {
     Exception exception;
     private final ValidateController validate = new ValidateController();
     Film film;
+    Set<Long> testList = new HashSet<>(){};
 
     @BeforeEach
     void setUp() {
-        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20,{1,1});
+        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20,testList);
     }
 
     @Test

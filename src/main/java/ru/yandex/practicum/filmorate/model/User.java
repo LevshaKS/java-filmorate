@@ -32,6 +32,6 @@ public class User extends DataModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    private Set<Long> friendsId ;
+    private Set<Long> friendsId = new HashSet<>() ;
 
     }

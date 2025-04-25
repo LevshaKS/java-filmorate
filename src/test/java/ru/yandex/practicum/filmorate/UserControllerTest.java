@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationNullException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class UserControllerTest {
@@ -16,10 +18,11 @@ public class UserControllerTest {
     Exception exception;
     private final ValidateController validate = new ValidateController();
     User user;
+    Set<Long> testList = new HashSet<>(){};
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "ya@yandex.ru", "login", "name", LocalDate.now().minusYears(3));
+        user = new User(1L, "ya@yandex.ru", "login", "name", LocalDate.now().minusYears(3),testList);
     }
 
     @Test
