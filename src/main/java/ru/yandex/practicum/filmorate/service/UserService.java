@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,19 +29,19 @@ public class UserService {
     public Collection<Long> friendsAdd(long id, long friendsId) {
         getUserId(id);
         getUserId(friendsId);
-        return userStorage.setFriendsId(id, friendsId);
+        return userStorage.setFriendId(id, friendsId);
 
     }
 
     public Collection<Long> friendsDelete(long id, long friendsId) {
         getUserId(id);
         getUserId(friendsId);
-        return userStorage.delFriendsId(id, friendsId);
+        return userStorage.delFriendId(id, friendsId);
     }
 
     public Collection<Long> friendsGetList(long id) {
         getUserId(id);
-        return userStorage.getFriendsId(id);
+        return userStorage.getFriendId(id);
     }
 
     public User create(User user) {
@@ -98,6 +97,9 @@ public class UserService {
     }
 
     public  Collection<Long> friendsGetCommonList(long id, long otherId){
+      //  if (friendsGetList(id)==null || friendsGetList(otherId)==null){
+     //       throw new ErrorIsNull("нет общих друзей");
+    //    }
         Collection<Long> userList1 = friendsGetList(id);
         Collection<Long> userList2 = friendsGetList(otherId);
 

@@ -68,21 +68,21 @@ public class UserController {
 
     @PutMapping ("/{id}/friends/{friendsId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long>  friendsAdd(@RequestBody @PathVariable long id,@PathVariable long  friendsId){
+    public Collection<Long>  friendsAdd(@PathVariable long id,@PathVariable long  friendsId){
         logger.info("добавили в друзья");
         return userService.friendsAdd (id, friendsId);
     }
 
     @DeleteMapping ("/{id}/friends/{friendsId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long>  friendsDelete(@RequestBody @PathVariable long id,@PathVariable long  friendsId){
+    public Collection<Long>  friendsDelete(@PathVariable long id,@PathVariable long  friendsId){
         logger.info("удалили из друзей");
         return userService.friendsDelete (id, friendsId);
     }
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long> friendsGetList (@RequestBody @PathVariable long id){
+    public Collection<Long> friendsGetList (@PathVariable long id){
         logger.info("показывает список друзей");
         return userService.friendsGetList(id);
     }

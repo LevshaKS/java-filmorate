@@ -32,12 +32,12 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         return oldUser;
     }
 
-    public Collection<Long> getFriendsId(long id){
+    public Collection<Long> getFriendId(long id){
         User getFriends = dataMap.get(id);
         return  getFriends.getFriendsId();
     }
 
-    public Collection<Long>  setFriendsId(long id, long friendsId) {
+    public Collection<Long> setFriendId(long id, long friendsId) {
         User  getFriends = dataMap.get(id); //добавление в друзья
 
         Set<Long> newFriendsList = getFriends.getFriendsId();
@@ -49,7 +49,7 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         getFriendsTo.setFriendsId(newFriendsListTo);
         return newFriendsList;
     }
-   public Collection<Long>  delFriendsId(long id, long friendsId){
+   public Collection<Long> delFriendId(long id, long friendsId){
        User  getFriends = dataMap.get(id);  //удаление из друзей
        Set<Long> newFriendsList = getFriends.getFriendsId();
        newFriendsList.remove(friendsId);
