@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationNullException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FilmControllerTest {
 
@@ -19,7 +21,7 @@ public class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20);
+        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20,{1,1});
     }
 
     @Test

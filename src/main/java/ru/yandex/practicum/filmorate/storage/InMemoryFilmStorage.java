@@ -1,0 +1,66 @@
+package ru.yandex.practicum.filmorate.storage;
+
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Film;
+
+import java.util.Collection;
+import java.util.Set;
+
+@Component
+public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Film> {
+
+
+
+
+    public Film create(Film film) {
+        film.setId(getNextId());
+
+        dataMap.put(film.getId(), film);
+        logger.info("Фильм добавлен id: " + film.getId());
+        return  film;
+    }
+
+
+    public Film update(Film newFilm) {
+        Film oldFilm = dataMap.get(newFilm.getId());
+        oldFilm.setName(newFilm.getName());
+        oldFilm.setDescription(newFilm.getDescription());
+        oldFilm.setReleaseDate(newFilm.getReleaseDate());
+        oldFilm.setDuration(newFilm.getDuration());
+      //  if (!newFilm.getLikesId().isEmpty()){
+        oldFilm.setLikesId(newFilm.getLikesId());
+        logger.info("Запись фильма обновлена");
+        return oldFilm;
+    }
+
+    public Collection<Long>  getLikeId(long id){
+        Film getLikes = dataMap.get(id);
+      return  getLikes.getLikesId();
+    }
+
+    public Collection<Long>  setLikeId(long id, long userId) {
+        Film getLikes = dataMap.get(id);
+         getLikes.getLikesId().add(userId);
+             //  newLikesList.add(userId);
+      //  getLikes.setLikesId(newLikesList);
+        return getLikes.getLikesId();
+    }
+
+    public Collection<Long>  delLikesId(long id, long userId){
+        Film getLikes = dataMap.get(id);
+        Set<Long> newLikesList = getLikes.getLikesId();
+        newLikesList.remove(id);
+        getLikes.setLikesId(newLikesList);
+        return newLikesList;
+    }
+
+    private long getNextId() {
+        long currentMaxId = dataMap.keySet()
+                .stream()
+                .mapToLong(id -> id)
+                .max()
+                .orElse(0);
+        return ++currentMaxId;
+
+    }
+}
