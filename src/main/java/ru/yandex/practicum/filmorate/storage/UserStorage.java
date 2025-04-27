@@ -4,15 +4,15 @@ import ru.yandex.practicum.filmorate.model.DataModel;
 
 import java.util.Collection;
 
-public interface UserStorage<T extends DataModel>  {
+public interface UserStorage<T extends DataModel> {
 
-     T create (T data);
+    T create(T data);
 
-     T update (T data);
+    T update(T data);
 
-     T delete(long id);
+    T delete(long id);
 
-    T getId (long id);
+    T getId(long id);
 
     Collection<T> getAll();
 
