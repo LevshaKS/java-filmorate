@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 
-
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -26,7 +25,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Film getFilmId(@RequestBody @PathVariable long id) {
+    public Film getFilmId(@PathVariable long id) {
         logger.info("вывод пользователя по ID");
         return filmService.getFilmId(id);
     }
@@ -47,7 +46,7 @@ public class FilmController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody @PathVariable long id) {
+    public void delete(@PathVariable long id) {
         logger.info("Удаление id=" + id);
         filmService.delete(id);
     }
@@ -61,19 +60,19 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long> likeAdd(@RequestBody @PathVariable long id, @PathVariable long userId) {
+    public Collection<Long> likeAdd(@PathVariable long id, @PathVariable long userId) {
         return filmService.likeAdd(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long> LikeDelete(@RequestBody @PathVariable long id, @PathVariable long userId) {
+    public Collection<Long> LikeDelete(@PathVariable long id, @PathVariable long userId) {
         return filmService.likeDelete(id, userId);
     }
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public  Collection <Film> getPopular(@RequestBody @RequestParam (defaultValue = "10") int count){
+    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopular(count);
     }
 }

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.exception;
 
-
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +18,16 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-public  ErrorResponse handlerIsNull (final ErrorIsNull e){
-    logger.warn(e.getMessage());
-    return new ErrorResponse("error",e.getMessage());
-}
+    public ErrorResponse handlerIsNull(final ErrorIsNull e) {
+        logger.warn(e.getMessage());
+        return new ErrorResponse("error", e.getMessage());
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowbla (final Throwable e){
+    public ErrorResponse handleThrowbla(final Throwable e) {
         logger.warn(e.getMessage());
-        return new ErrorResponse("error", "Произошла непредвиденная ошибка.") ;
+        return new ErrorResponse("error", "Произошла непредвиденная ошибка.");
     }
 
     @ExceptionHandler
@@ -75,5 +74,3 @@ public  ErrorResponse handlerIsNull (final ErrorIsNull e){
         return new ValidationErrorResponse(violations);
     }
 }
-
-

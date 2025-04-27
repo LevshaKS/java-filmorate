@@ -4,22 +4,23 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
 public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Film> {
 
 
-
-
     public Film create(Film film) {
         film.setId(getNextId());
-
+        if (film.getLikesId() == null) {
+            film.setLikesId(new HashSet<>() {
+            });
+        }
         dataMap.put(film.getId(), film);
         logger.info("Фильм добавлен id: " + film.getId());
-        return  film;
+        return film;
     }
-
 
     public Film update(Film newFilm) {
         Film oldFilm = dataMap.get(newFilm.getId());
@@ -27,26 +28,28 @@ public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Fi
         oldFilm.setDescription(newFilm.getDescription());
         oldFilm.setReleaseDate(newFilm.getReleaseDate());
         oldFilm.setDuration(newFilm.getDuration());
-      //  if (!newFilm.getLikesId().isEmpty()){
+
+        if (newFilm.getLikesId() == null) {
+            newFilm.setLikesId(new HashSet<>() {
+            });
+        }
         oldFilm.setLikesId(newFilm.getLikesId());
         logger.info("Запись фильма обновлена");
         return oldFilm;
     }
 
-    public Collection<Long>  getLikeId(long id){
+    public Collection<Long> getLikeId(long id) {
         Film getLikes = dataMap.get(id);
-      return  getLikes.getLikesId();
-    }
-
-    public Collection<Long>  setLikeId(long id, long userId) {
-        Film getLikes = dataMap.get(id);
-         getLikes.getLikesId().add(userId);
-             //  newLikesList.add(userId);
-      //  getLikes.setLikesId(newLikesList);
         return getLikes.getLikesId();
     }
 
-    public Collection<Long>  delLikesId(long id, long userId){
+    public Collection<Long> setLikeId(long id, long userId) {
+        Film getLikes = dataMap.get(id);
+        getLikes.getLikesId().add(userId);
+        return getLikes.getLikesId();
+    }
+
+    public Collection<Long> delLikesId(long id, long userId) {
         Film getLikes = dataMap.get(id);
         Set<Long> newLikesList = getLikes.getLikesId();
         newLikesList.remove(id);

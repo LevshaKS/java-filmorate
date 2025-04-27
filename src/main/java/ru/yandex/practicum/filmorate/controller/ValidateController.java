@@ -15,7 +15,6 @@ public class ValidateController {
 
     private final Logger log = LoggerFactory.getLogger(ValidateController.class);
 
-
     public void validateFilm(Film film) {
 
         final LocalDate FILM_DATE = LocalDate.of(1895, 12, 28);
@@ -99,7 +98,6 @@ public class ValidateController {
             log.warn("введена дата из будущего");
             throw new ValidationException("введена дата из будущего");
         }
-
     }
 }
 

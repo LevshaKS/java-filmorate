@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,9 +40,10 @@ public class UserService {
         return userStorage.delFriendId(id, friendsId);
     }
 
-    public Collection<Long> friendsGetList(long id) {
+    public Collection<User> friendsGetList(long id) {
         getUserId(id);
-        return userStorage.getFriendId(id);
+
+        return userStorage.getFriendId(id).stream().map(this::getUserId).collect(Collectors.toList());
     }
 
     public User create(User user) {
@@ -50,8 +52,6 @@ public class UserService {
         logger.info("пользователь добавлен id: " + returnUser.getId());
         return returnUser;
     }
-
-
 
     public Collection<User> getAll() {
         logger.info("Вернули список");
@@ -96,13 +96,9 @@ public class UserService {
         return userStorage.update(newUser);
     }
 
-    public  Collection<Long> friendsGetCommonList(long id, long otherId){
-      //  if (friendsGetList(id)==null || friendsGetList(otherId)==null){
-     //       throw new ErrorIsNull("нет общих друзей");
-    //    }
-        Collection<Long> userList1 = friendsGetList(id);
-        Collection<Long> userList2 = friendsGetList(otherId);
-
+    public List<User> friendsGetCommonList(long id, long otherId) {
+        Collection<User> userList1 = friendsGetList(id);
+        Collection<User> userList2 = friendsGetList(otherId);
         return userList1.stream().filter(userList2::contains).collect(Collectors.toList());
     }
 }

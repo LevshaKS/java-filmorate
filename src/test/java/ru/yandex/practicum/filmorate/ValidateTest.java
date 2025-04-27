@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidateTest {
     private Validator validator;
-    Set<Long> testList = new HashSet<>(){};
+    Set<Long> testList = new HashSet<>() {
+    };
 
     @BeforeEach
     void setUp() {
@@ -36,7 +37,7 @@ public class ValidateTest {
 
     @Test
     void validatorUserTest() {
-        User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3),testList);
+        User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3), testList);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,14 +34,13 @@ public class Film extends DataModel implements Comparable<Film> {
     @Min(1)
     private int duration;
 
-
-    private Set<Long> likesId = new HashSet<>();
+    private Set<Long> likesId ;
 
     @Override
     public int compareTo(Film o) {
-        if (o.getLikesId()==null){
+        if (o.getLikesId() == null) {
             return 0;
         }
-        return (int)(o.getLikesId().size()-this.getLikesId().size());
+        return o.getLikesId().size() - this.getLikesId().size();
     }
 }
