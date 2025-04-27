@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
+@Repository
 public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Film> {
 
-
+    @Override
     public Film create(Film film) {
         film.setId(getNextId());
         if (film.getLikesId() == null) {
@@ -22,6 +22,7 @@ public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Fi
         return film;
     }
 
+    @Override
     public Film update(Film newFilm) {
         Film oldFilm = dataMap.get(newFilm.getId());
         oldFilm.setName(newFilm.getName());
@@ -38,17 +39,20 @@ public class InMemoryFilmStorage extends Storage<Film> implements FilmStorage<Fi
         return oldFilm;
     }
 
+    @Override
     public Collection<Long> getLikeId(long id) {
         Film getLikes = dataMap.get(id);
         return getLikes.getLikesId();
     }
 
+    @Override
     public Collection<Long> setLikeId(long id, long userId) {
         Film getLikes = dataMap.get(id);
         getLikes.getLikesId().add(userId);
         return getLikes.getLikesId();
     }
 
+    @Override
     public Collection<Long> delLikesId(long id, long userId) {
         Film getLikes = dataMap.get(id);
         Set<Long> newLikesList = getLikes.getLikesId();

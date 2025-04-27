@@ -17,7 +17,7 @@ public class UserControllerTest {
 
     Exception exception;
     private final ValidateController validate = new ValidateController();
-    User user;
+    private User user;
     Set<Long> testList = new HashSet<>() {
     };
 

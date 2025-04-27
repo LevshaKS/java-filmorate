@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 
-@Component
+@Repository
 public class InMemoryUserStorage extends Storage<User> implements UserStorage<User> {
 
-
+    @Override
     public User create(User user) {
         user.setId(getNextId());
         if (user.getFriendsId() == null) {
@@ -20,7 +20,7 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         return user;
     }
 
-
+    @Override
     public User update(User newUser) {
         User oldUser = dataMap.get(newUser.getId());
         oldUser.setName(newUser.getName());
@@ -32,11 +32,13 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         return oldUser;
     }
 
+    @Override
     public Collection<Long> getFriendId(long id) {
         User getFriends = dataMap.get(id);
         return getFriends.getFriendsId();
     }
 
+    @Override
     public Collection<Long> setFriendId(long id, long friendsId) {
         User getFriends = dataMap.get(id); //добавление в друзья
         Set<Long> newFriendsList = getFriends.getFriendsId();
@@ -50,6 +52,7 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         return newFriendsList;
     }
 
+    @Override
     public Collection<Long> delFriendId(long id, long friendsId) {
         User getFriends = dataMap.get(id);  //удаление из друзей
         Set<Long> newFriendsList = getFriends.getFriendsId();

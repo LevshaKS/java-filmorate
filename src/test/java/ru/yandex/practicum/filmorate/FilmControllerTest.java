@@ -17,7 +17,7 @@ public class FilmControllerTest {
 
     Exception exception;
     private final ValidateController validate = new ValidateController();
-    Film film;
+    private Film film;
     Set<Long> testList = new HashSet<>() {
     };
 
