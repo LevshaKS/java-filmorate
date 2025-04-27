@@ -34,7 +34,7 @@ public class Film extends DataModel implements Comparable<Film> {
     @Min(1)
     private int duration;
 
-    private Set<Long> likesId ;
+    private Set<Long> likesId;
 
     @Override
     public int compareTo(Film o) {
