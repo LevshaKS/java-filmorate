@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-// взято с просторов интернета  вывод сообщений при ошибки
 @Getter
 @RequiredArgsConstructor
 public class ValidationErrorResponse {

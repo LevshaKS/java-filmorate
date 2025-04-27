@@ -2,19 +2,15 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-
 
 @RestController
 @RequestMapping("/users")
@@ -29,13 +25,11 @@ public class UserController {
         this.userService = userService;
     }
 
-
-
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User getUserId(@PathVariable @RequestBody long id){
+    public User getUserId(@PathVariable long id) {
         logger.info("вывод пользователя по ID");
-        return  userService.getUserId(id);
+        return userService.getUserId(id);
     }
 
     @GetMapping
@@ -54,7 +48,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody @PathVariable long id) {
+    public void delete(@PathVariable long id) {
         logger.info("Удаление id=" + id);
         userService.delete(id);
     }
@@ -66,32 +60,31 @@ public class UserController {
         return userService.update(newUser);
     }
 
-    @PutMapping ("/{id}/friends/{friendsId}")
+    @PutMapping("/{id}/friends/{friendsId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long>  friendsAdd(@PathVariable long id,@PathVariable long  friendsId){
+    public Collection<Long> friendsAdd(@PathVariable long id, @PathVariable long friendsId) {
         logger.info("добавили в друзья");
-        return userService.friendsAdd (id, friendsId);
+        return userService.friendsAdd(id, friendsId);
     }
 
-    @DeleteMapping ("/{id}/friends/{friendsId}")
+    @DeleteMapping("/{id}/friends/{friendsId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long>  friendsDelete(@PathVariable long id,@PathVariable long  friendsId){
+    public Collection<Long> friendsDelete(@PathVariable long id, @PathVariable long friendsId) {
         logger.info("удалили из друзей");
-        return userService.friendsDelete (id, friendsId);
+        return userService.friendsDelete(id, friendsId);
     }
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long> friendsGetList (@PathVariable long id){
+    public Collection<User> friendsGetList(@PathVariable long id) {
         logger.info("показывает список друзей");
         return userService.friendsGetList(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Long> friendsGetCommonList (@PathVariable long id, @PathVariable long otherId){
+    public Collection<User> friendsGetCommonList(@PathVariable long id, @PathVariable long otherId) {
         logger.info("показывает список друзей");
         return userService.friendsGetCommonList(id, otherId);
     }
-
 }

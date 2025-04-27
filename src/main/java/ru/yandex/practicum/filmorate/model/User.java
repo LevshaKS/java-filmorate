@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Setter
@@ -21,7 +20,6 @@ public class User extends DataModel {
     @Email(message = "email не соотвествует формату")
     private String email;
 
-
     @NotNull(message = "логин не заполнен")
     private String login;
 
@@ -32,6 +30,7 @@ public class User extends DataModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    private Set<Long> friendsId = new HashSet<>() ;
+    private Set<Long> friendsId;
 
-    }
+
+}

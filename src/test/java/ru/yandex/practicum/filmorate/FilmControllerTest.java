@@ -18,11 +18,12 @@ public class FilmControllerTest {
     Exception exception;
     private final ValidateController validate = new ValidateController();
     Film film;
-    Set<Long> testList = new HashSet<>(){};
+    Set<Long> testList = new HashSet<>() {
+    };
 
     @BeforeEach
     void setUp() {
-        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20,testList);
+        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20, testList);
     }
 
     @Test
@@ -100,6 +101,5 @@ public class FilmControllerTest {
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("продолжительность <= 0", exception.getMessage());
     }
-
 
 }
