@@ -97,10 +97,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void UserFriends (){
-        User user1 =  new User(1L, "ya1@yandex.ru", "login1", "name1", LocalDate.now().minusYears(3), testList);
-        User user2 =  new User(2L, "ya2@yandex.ru", "login2", "name2", LocalDate.now().minusYears(3), testList);
+    public void userFriends() {
+        User user1 = new User(1L, "ya1@yandex.ru", "login1", "name1", LocalDate.now().minusYears(3), testList);
+        User user2 = new User(2L, "ya2@yandex.ru", "login2", "name2", LocalDate.now().minusYears(3), testList);
         user1.getFriendsId().add(2L);
         Assertions.assertEquals(2, user1.getFriendsId().stream().toList().get(0));
-            }
+    }
 }
