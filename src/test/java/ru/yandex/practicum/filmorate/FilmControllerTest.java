@@ -10,16 +10,21 @@ import ru.yandex.practicum.filmorate.exception.ValidationNullException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FilmControllerTest {
 
     Exception exception;
     private final ValidateController validate = new ValidateController();
-    Film film;
+    private Film film;
+    Set<Long> testList = new HashSet<>() {
+    };
+    Set<String> testListGenre = new HashSet<>(){};
 
     @BeforeEach
     void setUp() {
-        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20);
+        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20, testList, "G", testListGenre);
     }
 
     @Test
@@ -97,6 +102,5 @@ public class FilmControllerTest {
         exception = Assertions.assertThrows(ValidationException.class, () -> validate.validateFilm(film));
         Assertions.assertEquals("продолжительность <= 0", exception.getMessage());
     }
-
 
 }

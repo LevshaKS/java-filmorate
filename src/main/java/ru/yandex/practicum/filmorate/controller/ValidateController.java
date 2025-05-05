@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.exception.ValidationNullException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -9,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
+@Component
 public class ValidateController {
 
     private final Logger log = LoggerFactory.getLogger(ValidateController.class);
@@ -34,6 +36,14 @@ public class ValidateController {
         if (film.getDescription().isBlank() || film.getDescription().isEmpty()) {
             log.warn("описание пустое");
             throw new ValidationException("описание пустое");
+        }
+        if(film.getMpa()==null){
+            log.warn("рейтинг пуст");
+            throw new ValidationNullException("рейтинг пуст");
+        }
+        if(film.getMpa().isBlank() || film.getMpa().isEmpty()){
+            log.warn("рейтинг пуст");
+            throw new ValidationException("рейтинг пуст");
         }
 
         if (film.getDescription().length() > 200) {
@@ -96,7 +106,6 @@ public class ValidateController {
             log.warn("введена дата из будущего");
             throw new ValidationException("введена дата из будущего");
         }
-
     }
 }
 
