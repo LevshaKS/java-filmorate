@@ -2,80 +2,95 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 
-import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    private final ValidateController validate = new ValidateController();
-    private final Map<Long, User> users = new HashMap<>();
+    private final UserService userService;
 
-    private final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping //запрос всех пользователей
-    public ResponseEntity<Collection<User>> usersAll() {
-
-        log.info("вывод списка пользователей");
-        return ResponseEntity.ok(users.values());
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping //добавление нового пользователя
-    public ResponseEntity<?> create(@Valid @RequestBody User user) {
-        validate.validateUser(user);
-
-        if (users.containsValue(user)) {
-            log.warn("ошибка добавления пользователя, такой пользователь уже есть");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ошибка добавления пользователя, такой пользователь уже есть");
-        }
-        user.setId(getNextId());
-        users.put(user.getId(), user);
-        log.info("пользователь создан id: " + user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(user); //отрпавляем ответ с статусом и телом
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getUserId(@Positive(message = "неверное значение") @PathVariable long id) {
+        logger.info("вывод пользователя по ID");
+        return userService.getUserId(id);
     }
 
-    @PutMapping //обновление пользователя
-    public ResponseEntity<?> update(@Valid @RequestBody User newUser) {
-        if (newUser.getId() == null) {
-            log.warn("ID пустой");
-            throw new ValidationException(" ID пустой");
-            // изначально сделал чтоб в теле была ошибка, но не прошло тесты в Postman
-            //      return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID пустой");
-        }
-        if (!users.containsKey(newUser.getId())) {
-            log.warn("пользователь с таким ID не найден");
-            throw new ValidationException("пользователь с таким ID не найден");
-            // изначально сделал чтоб в теле была ошибка, но не прошло тесты в Postman
-            //   return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("пользователь с таким ID не найден");
-        }
-        validate.validateUser(newUser);
-        User oldUser = users.get(newUser.getId());
-        oldUser.setEmail(newUser.getEmail());
-        oldUser.setLogin(newUser.getLogin());
-        oldUser.setBirthday(newUser.getBirthday());
-        oldUser.setName(newUser.getName());
-        log.info("пользователь изменен");
-        return ResponseEntity.ok(oldUser);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<User> userAll() {
+        logger.info("вывод списка пользователей");
+        return userService.getAll();
     }
 
-    private long getNextId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public User create(@Valid @RequestBody User user) {
+        logger.info("Пользователь добавлен");
+        return userService.create(user);
+    }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@Positive(message = "неверное значение") @PathVariable long id) {
+        logger.info("Удаление id=" + id);
+        userService.delete(id);
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public User update(@RequestBody User newUser) {
+        logger.info("запись пользователя обновлена");
+        return userService.update(newUser);
+    }
+
+    @PutMapping("/{id}/friends/{friendsId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Long> friendsAdd(@Positive(message = "неверное значение") @PathVariable long id,
+                                       @Positive(message = "неверное значение") @PathVariable long friendsId) {
+        logger.info("добавили в друзья");
+        return userService.friendsAdd(id, friendsId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendsId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Long> friendsDelete(@Positive(message = "неверное значение") @PathVariable long id,
+                                          @Positive(message = "неверное значение") @PathVariable long friendsId) {
+        logger.info("удалили из друзей");
+        return userService.friendsDelete(id, friendsId);
+    }
+
+    @GetMapping("/{id}/friends")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<User> friendsGetList(@Positive(message = "неверное значение") @PathVariable long id) {
+        logger.info("показывает список друзей");
+        return userService.friendsGetList(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<User> friendsGetCommonList(@Positive(message = "неверное значение") @PathVariable long id,
+                                                 @Positive(message = "неверное значение") @PathVariable long otherId) {
+        logger.info("показывает список друзей");
+        return userService.friendsGetCommonList(id, otherId);
     }
 }

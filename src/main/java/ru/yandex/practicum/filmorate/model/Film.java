@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Film.
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @AllArgsConstructor
-public class Film {
+public class Film extends DataModel implements Comparable<Film> {
 
     private Long id;
 
@@ -32,4 +33,14 @@ public class Film {
     @Positive(message = "неверное значение")
     @Min(1)
     private int duration;
+
+    private Set<Long> likesId;
+
+    @Override
+    public int compareTo(Film o) {
+        if (o.getLikesId() == null) {
+            return 0;
+        }
+        return o.getLikesId().size() - this.getLikesId().size();
+    }
 }

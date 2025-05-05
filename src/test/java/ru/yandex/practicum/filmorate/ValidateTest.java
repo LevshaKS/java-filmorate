@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidateTest {
     private Validator validator;
+    Set<Long> testList = new HashSet<>() {
+    };
 
     @BeforeEach
     void setUp() {
@@ -27,14 +30,14 @@ public class ValidateTest {
 
     @Test
     void validatorUserOk() {
-        User user = new User(1L, "name@yabex.ru", "log", "name", LocalDate.now().minusYears(3));
+        User user = new User(1L, "name@yabex.ru", "log", "name", LocalDate.now().minusYears(3), testList);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void validatorUserTest() {
-        User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3));
+        User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3), testList);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);
@@ -44,7 +47,7 @@ public class ValidateTest {
 
     @Test
     void validatorUserNotNull() {
-        User user = new User(1L, null, null, "name", null);
+        User user = new User(1L, null, null, "name", null, testList);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(3);
@@ -54,7 +57,7 @@ public class ValidateTest {
 
     @Test
     void validatorFilmOk() {
-        Film film = new Film(1L, "kino", "kino o kine", LocalDate.of(1990, 02, 22), 25);
+        Film film = new Film(1L, "kino", "kino o kine", LocalDate.of(1990, 02, 22), 25, testList);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
@@ -62,7 +65,7 @@ public class ValidateTest {
     @Test
     void validatorFilmTest() {
         Film film = new Film(1L, "kino", Strings.repeat("*", 220),
-                LocalDate.now().plusYears(3), 2);
+                LocalDate.now().plusYears(3), 2, testList);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);
@@ -73,7 +76,7 @@ public class ValidateTest {
     @Test
     void validatorFilmNotNull() {
         Film film = new Film(1L, null, null,
-                null, 2);
+                null, 2, testList);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(3);
