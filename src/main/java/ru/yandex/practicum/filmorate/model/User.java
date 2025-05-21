@@ -5,12 +5,11 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Setter
 @Getter
 @ToString
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode(exclude = {"id", "name", "birthday"}, callSuper = false)
 public class User extends DataModel {
 
@@ -29,8 +28,5 @@ public class User extends DataModel {
     @Past(message = "дата из будущего")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-
-    private Set<Long> friendsId;
-
 
 }
