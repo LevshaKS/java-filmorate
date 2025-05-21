@@ -36,7 +36,7 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
     }
 
     @Override
-    public Collection<Long> setFriendId(long id, long friendsId) {//добавление в друзья
+    public Collection<Long> setFriendId(long id, long friendsId) {
         if (!friendsMap.containsKey(id)) {
             Set<Long> newFriendList = new HashSet<>();
             newFriendList.add(friendsId);
