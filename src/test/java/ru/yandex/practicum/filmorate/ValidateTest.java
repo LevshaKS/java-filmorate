@@ -44,7 +44,7 @@ public class ValidateTest {
 
     @Test
     void validatorUserOk() {
-                Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty());
     }
 
@@ -73,15 +73,15 @@ public class ValidateTest {
 
     @Test
     void validatorFilmOk() {
-            Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void validatorFilmTest() {
-        film.setDescription("*".repeat( 220));
-        film.setReleaseDate( LocalDate.now().plusYears(3));
-         Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        film.setDescription("*".repeat(220));
+        film.setReleaseDate(LocalDate.now().plusYears(3));
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);
         assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactlyInAnyOrder("не правильное число символов",
