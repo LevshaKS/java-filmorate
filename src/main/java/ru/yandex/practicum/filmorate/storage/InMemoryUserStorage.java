@@ -8,13 +8,12 @@ import java.util.*;
 @Repository
 public class InMemoryUserStorage extends Storage<User> implements UserStorage<User> {
 
+    protected final Map<Long, Set<Long>> friendsMap = new HashMap<>();
+
     @Override
     public User create(User user) {
         user.setId(getNextId());
-        if (user.getFriendsId() == null) {
-            user.setFriendsId(new HashSet<>() {
-            });
-        }
+
         dataMap.put(user.getId(), user);
         logger.info("Пользователь добавлен id: " + user.getId());
         return user;
@@ -27,44 +26,31 @@ public class InMemoryUserStorage extends Storage<User> implements UserStorage<Us
         oldUser.setEmail(newUser.getEmail());
         oldUser.setLogin(newUser.getLogin());
         oldUser.setBirthday(newUser.getBirthday());
-        oldUser.setFriendsId(newUser.getFriendsId());
         logger.info("Запись пользователя обновлена");
         return oldUser;
     }
 
     @Override
     public Collection<Long> getFriendId(long id) {
-        User getFriends = dataMap.get(id);
-        return getFriends.getFriendsId();
+        return friendsMap.get(id);
     }
 
     @Override
-    public Collection<Long> setFriendId(long id, long friendsId) {
-        User getFriends = dataMap.get(id); //добавление в друзья
-        Set<Long> newFriendsList = getFriends.getFriendsId();
-        newFriendsList.add(friendsId);
-        getFriends.setFriendsId(newFriendsList);
-
-        User getFriendsTo = dataMap.get(friendsId);    //зеркальное добавление в друзья
-        Set<Long> newFriendsListTo = getFriendsTo.getFriendsId();
-        newFriendsListTo.add(id);
-        getFriendsTo.setFriendsId(newFriendsListTo);
-        return newFriendsList;
+    public Collection<Long> setFriendId(long id, long friendsId) {//добавление в друзья
+        if (!friendsMap.containsKey(id)) {
+            Set<Long> newFriendList = new HashSet<>();
+            newFriendList.add(friendsId);
+            friendsMap.put(id, newFriendList);
+        } else {
+            friendsMap.get(id).add(friendsId);
+        }
+        return friendsMap.get(id);
     }
 
     @Override
     public Collection<Long> delFriendId(long id, long friendsId) {
-        User getFriends = dataMap.get(id);  //удаление из друзей
-        Set<Long> newFriendsList = getFriends.getFriendsId();
-        newFriendsList.remove(friendsId);
-        getFriends.setFriendsId(newFriendsList);
-
-        User getFriendsTo = dataMap.get(friendsId);  //удаление из друзей
-        Set<Long> newFriendsListTo = getFriendsTo.getFriendsId();
-        newFriendsListTo.remove(id);
-        getFriendsTo.setFriendsId(newFriendsListTo);
-
-        return newFriendsList;
+        friendsMap.get(id).remove(friendsId);
+        return friendsMap.get(id);
     }
 
     private long getNextId() {

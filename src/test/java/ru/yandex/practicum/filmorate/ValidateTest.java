@@ -3,14 +3,13 @@ package ru.yandex.practicum.filmorate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,24 +19,39 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidateTest {
     private Validator validator;
-    Set<Long> testList = new HashSet<>() {
-    };
+
+    User user = new User();
+    Film film = new Film();
+
 
     @BeforeEach
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
+        user.setId(1L);
+        user.setEmail("ya@yandex.ru");
+        user.setLogin("login");
+        user.setName("name");
+        user.setBirthday(LocalDate.now().minusYears(3));
+
+        film.setId(1L);
+        film.setName("kino");
+        film.setDescription("kino o kine");
+        film.setReleaseDate(LocalDate.of(1990, 02, 22));
+        film.setDuration(25);
+        film.setMpa(new Mpa());
+
     }
 
     @Test
     void validatorUserOk() {
-        User user = new User(1L, "name@yabex.ru", "log", "name", LocalDate.now().minusYears(3), testList);
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+                Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void validatorUserTest() {
-        User user = new User(1L, "nameyabex.ru", "log", "name", LocalDate.now().plusYears(3), testList);
+        user.setEmail("nameyabex.ru");
+        user.setBirthday(LocalDate.now().plusDays(3));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);
@@ -47,7 +61,9 @@ public class ValidateTest {
 
     @Test
     void validatorUserNotNull() {
-        User user = new User(1L, null, null, "name", null, testList);
+        user.setEmail(null);
+        user.setLogin(null);
+        user.setBirthday(null);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(3);
@@ -57,16 +73,15 @@ public class ValidateTest {
 
     @Test
     void validatorFilmOk() {
-        Film film = new Film(1L, "kino", "kino o kine", LocalDate.of(1990, 02, 22), 25, testList);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+            Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void validatorFilmTest() {
-        Film film = new Film(1L, "kino", Strings.repeat("*", 220),
-                LocalDate.now().plusYears(3), 2, testList);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        film.setDescription("*".repeat( 220));
+        film.setReleaseDate( LocalDate.now().plusYears(3));
+         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(2);
         assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactlyInAnyOrder("не правильное число символов",
@@ -75,8 +90,9 @@ public class ValidateTest {
 
     @Test
     void validatorFilmNotNull() {
-        Film film = new Film(1L, null, null,
-                null, 2, testList);
+        film.setName(null);
+        film.setReleaseDate(null);
+        film.setDescription(null);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
         assertThat(violations).hasSize(3);

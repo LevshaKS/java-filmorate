@@ -9,11 +9,14 @@ import ru.yandex.practicum.filmorate.controller.ValidateController;
 import ru.yandex.practicum.filmorate.exception.ErrorIsNull;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,19 +26,25 @@ public class FilmService {
 
     private final UserStorage<User> userStorage;
     private final ValidateController validateController;
+    private final MpaStorage<Mpa> mpaStorage;
+
     private final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
-    public FilmService(FilmStorage<Film> filmStorage, UserStorage<User> userStorage, ValidateController validateController) {
+    public FilmService(FilmStorage<Film> filmStorage, UserStorage<User> userStorage, ValidateController validateController,
+                       MpaStorage<Mpa> mpaStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.validateController = validateController;
+        this.mpaStorage = mpaStorage;
+
 
     }
 
     public Film create(Film film) {
         validateController.validateFilm(film);
         Film returnFilm = filmStorage.create(film);
+        filmStorage.addGenre(returnFilm.getId(), returnFilm.getGenres());
         logger.info("Фильм добавлен id: " + returnFilm.getId());
         return returnFilm;
     }
@@ -46,6 +55,10 @@ public class FilmService {
             throw new ErrorIsNull("нет такого id");
         }
         logger.info("поиск по id=" + id);
+
+        getFilm.setGenres(filmStorage.getGenre(id));
+        getFilm.setMpa(mpaStorage.getId(getFilm.getMpa().getId()));
+        getFilm.setLikesId(new HashSet<>(filmStorage.getLikeId(id)));
         return getFilm;
     }
 
@@ -55,10 +68,18 @@ public class FilmService {
         if (returnAll.isEmpty()) {
             throw new ErrorIsNull("список пуст");
         }
-        return returnAll;
+        return returnAll.stream()
+                .peek(film -> {
+                    film.setGenres(filmStorage.getGenre(film.getId()));
+                    film.setMpa(mpaStorage.getId(film.getMpa().getId()));
+                    film.setLikesId(new HashSet<>(filmStorage.getLikeId(film.getId())));
+                })
+                .collect(Collectors.toList());
+
     }
 
     public void delete(long id) {
+
         Film delFilm = filmStorage.delete(id);
         if (delFilm == null) {
             throw new ErrorIsNull("нет такого id");
@@ -80,6 +101,8 @@ public class FilmService {
         }
         validateController.validateFilm(newFilm);
         logger.info("запись фильма обновлена");
+
+        filmStorage.updateGenre(newFilm.getId(), newFilm.getGenres());
         return filmStorage.update(newFilm);
     }
 
