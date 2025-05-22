@@ -10,14 +10,10 @@ import ru.yandex.practicum.filmorate.exception.ErrorIsNull;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,21 +23,14 @@ public class FilmService {
 
     private final UserStorage<User> userStorage;
     private final ValidateController validateController;
-    private final MpaStorage<Mpa> mpaStorage;
-
-    private final GenreStorage<Genre> genreStorage;
 
     private final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
-    public FilmService(FilmStorage<Film> filmStorage, UserStorage<User> userStorage, ValidateController validateController,
-                       MpaStorage<Mpa> mpaStorage, GenreStorage<Genre> genreStorage) {
+    public FilmService(FilmStorage<Film> filmStorage, UserStorage<User> userStorage, ValidateController validateController) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.validateController = validateController;
-        this.mpaStorage = mpaStorage;
-        this.genreStorage = genreStorage;
-
 
     }
 
@@ -61,7 +50,6 @@ public class FilmService {
         logger.info("поиск по id=" + id);
 
         getFilm.setGenres(filmStorage.getGenre(id));
-        getFilm.setMpa(mpaStorage.getId(getFilm.getMpa().getId()));
         getFilm.setLikesId(new HashSet<>(filmStorage.getLikeId(id)));
         return getFilm;
     }
@@ -69,20 +57,16 @@ public class FilmService {
     public Collection<Film> getAll() {
         logger.info("Вернули список");
         Collection<Film> returnAllFilm = filmStorage.getAll();
-        Collection<Mpa> returnAllMpa = mpaStorage.getAll();
-        Map<Long, Mpa> allMpa = new HashMap<>();
-        returnAllMpa.stream().peek(mpa -> allMpa.put(mpa.getId(), mpa));
 
         if (returnAllFilm.isEmpty()) {
             throw new ErrorIsNull("список пуст");
         }
         return returnAllFilm.stream()
                 .peek(film -> {
-                    film.setMpa(allMpa.get(film.getMpa().getId()));
                     film.setGenres(filmStorage.getGenre(film.getId()));
                     film.setLikesId(new HashSet<>(filmStorage.getLikeId(film.getId())));
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public void delete(long id) {

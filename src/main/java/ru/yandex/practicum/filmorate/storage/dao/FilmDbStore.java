@@ -81,7 +81,8 @@ public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Fil
 
     @Override
     public Film getId(long id) {        //получам фильм по id
-        String query = "SELECT * FROM films WHERE id=?";
+        String query = "SELECT f.*, mpa_r.name AS mpa_name FROM films AS f LEFT OUTER JOIN MPA_RATING AS mpa_r " +
+                "ON f.MPA_RATING_ID = mpa_r.id WHERE f.id=?";
         Optional<Film> film = findOne(query, id);
         if (film.isPresent()) {
             logger.info("возращаем фильм id: " + id);
@@ -95,7 +96,8 @@ public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Fil
 
     @Override
     public Collection<Film> getAll() {      //получам весь список фильмов
-        String query = "SELECT * FROM films";
+        String query = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_rating_id, mpa_r.name AS mpa_name " +
+                "FROM films AS f LEFT OUTER JOIN MPA_RATING AS mpa_r ON f.MPA_RATING_ID = mpa_r.id ORDER BY f.id ASC";
         logger.info("возращаем список фильмов");
         return findMany(query);
     }
