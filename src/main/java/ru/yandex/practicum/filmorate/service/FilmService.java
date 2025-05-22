@@ -8,15 +8,16 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.ValidateController;
 import ru.yandex.practicum.filmorate.exception.ErrorIsNull;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,15 +29,18 @@ public class FilmService {
     private final ValidateController validateController;
     private final MpaStorage<Mpa> mpaStorage;
 
+    private final GenreStorage<Genre> genreStorage;
+
     private final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
     public FilmService(FilmStorage<Film> filmStorage, UserStorage<User> userStorage, ValidateController validateController,
-                       MpaStorage<Mpa> mpaStorage) {
+                       MpaStorage<Mpa> mpaStorage, GenreStorage<Genre> genreStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.validateController = validateController;
         this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
 
 
     }
@@ -64,18 +68,21 @@ public class FilmService {
 
     public Collection<Film> getAll() {
         logger.info("Вернули список");
-        Collection<Film> returnAll = filmStorage.getAll();
-        if (returnAll.isEmpty()) {
+        Collection<Film> returnAllFilm = filmStorage.getAll();
+        Collection<Mpa> returnAllMpa = mpaStorage.getAll();
+        Map<Long, Mpa> allMpa = new HashMap<>();
+        returnAllMpa.stream().peek(mpa -> allMpa.put(mpa.getId(), mpa));
+
+        if (returnAllFilm.isEmpty()) {
             throw new ErrorIsNull("список пуст");
         }
-        return returnAll.stream()
+        return returnAllFilm.stream()
                 .peek(film -> {
+                    film.setMpa(allMpa.get(film.getMpa().getId()));
                     film.setGenres(filmStorage.getGenre(film.getId()));
-                    film.setMpa(mpaStorage.getId(film.getMpa().getId()));
                     film.setLikesId(new HashSet<>(filmStorage.getLikeId(film.getId())));
                 })
-                .collect(Collectors.toList());
-
+                .collect(Collectors.toSet());
     }
 
     public void delete(long id) {

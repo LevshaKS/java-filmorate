@@ -31,4 +31,5 @@ public interface FilmStorage<T extends DataModel> {
      void updateGenre(long filmId, Set<Genre> genres);
 
      Set<Genre> getGenre(long filmId);
+
 }
