@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
-import org.springframework.context.annotation.Primary;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,17 +11,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
 
-
-@Primary
 @Repository
 
 public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Film> {
@@ -142,14 +137,16 @@ public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Fil
     @Override
     public void addGenre(long filmId, Set<Genre> genreSet) {
         try {
+            List<Object[]> batch = new ArrayList<>();
             for (Genre genre : genreSet) {
-                jdbc.update("INSERT INTO genre(film_id, genre_id) VALUES(?,?)", filmId, genre.getId());
+                Object[] value = new Object[]{filmId, genre.getId()};
+                batch.add(value);
             }
+            jdbc.batchUpdate("INSERT INTO genre(film_id, genre_id) VALUES(?,?)", batch);
             logger.info("добавление списка жанров фильма в db");
         } catch (DataAccessException e) {
             throw new ErrorIsNull(e.getMessage());
         }
-
     }
 
     @Override
@@ -175,4 +172,5 @@ public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Fil
         logger.info("возращаем список жанров фильма");
         return newGenreSet;
     }
+
 }
