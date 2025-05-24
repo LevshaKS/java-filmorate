@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ErrorIsNull;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -12,6 +13,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,9 +99,31 @@ public class FilmDbStore extends BaseRepository<Film> implements FilmStorage<Fil
     @Override
     public Collection<Film> getAll() {      //получам весь список фильмов
         String query = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa_rating_id, mpa_r.name AS mpa_name " +
-                "FROM films AS f LEFT OUTER JOIN MPA_RATING AS mpa_r ON f.MPA_RATING_ID = mpa_r.id ORDER BY f.id ASC";
+                "FROM films AS f LEFT OUTER JOIN MPA_RATING AS mpa_r ON f.MPA_RATING_ID = mpa_r.id";
         logger.info("возращаем список фильмов");
         return findMany(query);
+    }
+
+    public void getAllFullGenreLike(Collection<Film> films) {
+        List<String> filmsId = films.stream().map(film -> String.valueOf(film.getId())).collect(Collectors.toList());  //создам список id фильмов из переданной коллекции
+        Map<Long, Film> filmMap = films.stream().collect(Collectors.toMap(Film::getId, film -> film)); //создаем мапу id фильмом и самим фильмом)
+
+        String queryGenre = "SELECT g.film_id, gs.id AS id, gs.name" +
+                " FROM GENRE AS g LEFT OUTER JOIN GENRES AS gs ON g.GENRE_ID = gs.ID WHERE film_id IN (%s)";
+        String queryLikes = "SELECT film_id, user_id FROM film_likes WHERE film_id IN (%s)";
+
+        SqlRowSet rsGenre = jdbc.queryForRowSet(String.format(queryGenre, String.join(",", filmsId)));
+        while (rsGenre.next()) {
+            Genre genre = new Genre();
+            genre.setId(rsGenre.getLong("id"));
+            genre.setName(rsGenre.getString("name"));
+            filmMap.get(rsGenre.getLong("film_id")).getGenres().add(genre);
+        }
+
+        SqlRowSet rsLike = jdbc.queryForRowSet(String.format(queryLikes, String.join(",", filmsId)));
+        while (rsLike.next()) {
+            filmMap.get(rsLike.getLong("film_id")).getLikesId().add(rsLike.getLong("user_id"));
+        }
     }
 
     @Override
