@@ -35,6 +35,4 @@ public interface FilmStorage<T extends DataModel> {
 
     void getAllFullGenreLike(Collection<Film> films);
 
-     void getAllFullGenreLike (Collection<Film> films);
-
 }
