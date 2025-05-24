@@ -10,20 +10,23 @@ import ru.yandex.practicum.filmorate.exception.ValidationNullException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 public class FilmControllerTest {
 
     Exception exception;
     private final ValidateController validate = new ValidateController();
     private Film film;
-    Set<Long> testList = new HashSet<>() {
-    };
+
+
 
     @BeforeEach
     void setUp() {
-        film = new Film(1L, "name", "описание ", LocalDate.now().minusYears(3), 20, testList);
+        film = new Film();
+        film.setId(1L);
+        film.setName("name");
+        film.setDescription("описание ");
+        film.setReleaseDate(LocalDate.now().minusYears(3));
+        film.setDuration(20);
     }
 
     @Test

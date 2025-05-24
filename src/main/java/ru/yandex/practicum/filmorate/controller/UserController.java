@@ -90,7 +90,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Collection<User> friendsGetCommonList(@Positive(message = "неверное значение") @PathVariable long id,
                                                  @Positive(message = "неверное значение") @PathVariable long otherId) {
-        logger.info("показывает список друзей");
+        logger.info("показывает обший список друзей");
         return userService.friendsGetCommonList(id, otherId);
     }
 }

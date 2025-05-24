@@ -22,7 +22,7 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
-    public UserService(UserStorage<User> userStorage, ValidateController validateController) {
+        public UserService(UserStorage<User> userStorage, ValidateController validateController) {
         this.userStorage = userStorage;
         this.validateController = validateController;
     }

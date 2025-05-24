@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.ValidateController;
 import ru.yandex.practicum.filmorate.exception.ErrorIsNull;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +23,7 @@ public class FilmService {
 
     private final UserStorage<User> userStorage;
     private final ValidateController validateController;
+
     private final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
@@ -36,6 +37,7 @@ public class FilmService {
     public Film create(Film film) {
         validateController.validateFilm(film);
         Film returnFilm = filmStorage.create(film);
+        filmStorage.addGenre(returnFilm.getId(), returnFilm.getGenres());
         logger.info("Фильм добавлен id: " + returnFilm.getId());
         return returnFilm;
     }
@@ -46,19 +48,26 @@ public class FilmService {
             throw new ErrorIsNull("нет такого id");
         }
         logger.info("поиск по id=" + id);
+
+        getFilm.setGenres(filmStorage.getGenre(id));
+        getFilm.setLikesId(new HashSet<>(filmStorage.getLikeId(id)));
         return getFilm;
     }
 
     public Collection<Film> getAll() {
         logger.info("Вернули список");
-        Collection<Film> returnAll = filmStorage.getAll();
-        if (returnAll.isEmpty()) {
+        Collection<Film> returnAllFilm = filmStorage.getAll();
+
+        if (returnAllFilm.isEmpty()) {
             throw new ErrorIsNull("список пуст");
         }
-        return returnAll;
+        filmStorage.getAllFullGenreLike(returnAllFilm);
+        return returnAllFilm;
     }
 
+
     public void delete(long id) {
+
         Film delFilm = filmStorage.delete(id);
         if (delFilm == null) {
             throw new ErrorIsNull("нет такого id");
@@ -80,6 +89,8 @@ public class FilmService {
         }
         validateController.validateFilm(newFilm);
         logger.info("запись фильма обновлена");
+
+        filmStorage.updateGenre(newFilm.getId(), newFilm.getGenres());
         return filmStorage.update(newFilm);
     }
 

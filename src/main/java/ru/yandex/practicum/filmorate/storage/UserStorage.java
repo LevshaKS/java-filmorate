@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.DataModel;
 
 import java.util.Collection;
 
+
 public interface UserStorage<T extends DataModel> {
 
     T create(T data);

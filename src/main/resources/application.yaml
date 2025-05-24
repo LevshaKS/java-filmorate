@@ -3,3 +3,8 @@ logging:
     org:
       zalando:
         logbook: TRACE
+
+spring:
+  h2:
+    console:
+      enabled: true
