@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.DataModel;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.Collection;
@@ -26,10 +27,12 @@ public interface FilmStorage<T extends DataModel> {
 
     void addGenre(long filmId, Set<Genre> genres);
 
-     void deleteGenre(long filmId);
+    void deleteGenre(long filmId);
 
-     void updateGenre(long filmId, Set<Genre> genres);
+    void updateGenre(long filmId, Set<Genre> genres);
 
-     Set<Genre> getGenre(long filmId);
+    Set<Genre> getGenre(long filmId);
+
+    void getAllFullGenreLike(Collection<Film> films);
 
 }

@@ -61,13 +61,10 @@ public class FilmService {
         if (returnAllFilm.isEmpty()) {
             throw new ErrorIsNull("список пуст");
         }
-        return returnAllFilm.stream()
-                .peek(film -> {
-                    film.setGenres(filmStorage.getGenre(film.getId()));
-                    film.setLikesId(new HashSet<>(filmStorage.getLikeId(film.getId())));
-                })
-                .collect(Collectors.toList());
+        filmStorage.getAllFullGenreLike(returnAllFilm);
+        return returnAllFilm;
     }
+
 
     public void delete(long id) {
 
