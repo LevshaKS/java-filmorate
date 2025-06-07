@@ -5,15 +5,11 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Film.
- */
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class Film extends DataModel implements Comparable<Film> {
 
     private Long id;
@@ -34,7 +30,12 @@ public class Film extends DataModel implements Comparable<Film> {
     @Min(1)
     private int duration;
 
-    private Set<Long> likesId;
+    private Set<Long> likesId = new HashSet<>();
+
+    private Set<Genre> genres = new HashSet<>();
+
+    //  @NotNull (message ="рейтинг не может быть пустым")
+    private Mpa mpa;
 
     @Override
     public int compareTo(Film o) {
